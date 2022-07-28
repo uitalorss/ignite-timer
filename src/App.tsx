@@ -1,9 +1,14 @@
+import { Button } from "./components/Button";
 import { GlobalStyle } from "./styles/global";
 
 export function App() {
   return (
     <>
-      <h1>Olá</h1>
+      <Button variant="primary" />
+      <Button variant="secondary" />
+      <Button variant="danger"/>
+      <Button variant="success"/>
+      <Button />
 
       <GlobalStyle />
     </>
