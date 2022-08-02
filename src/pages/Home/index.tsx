@@ -17,7 +17,13 @@ export function Home(){
           <label htmlFor="task">Vou trabalhar em</label>
           <TaskInput id="task" type="text" placeholder="Dê um nome para o seu projeto" />
           <label htmlFor="counter">durante</label>
-          <MinutesInput id="counter" type="number" placeholder="00" />
+          <MinutesInput 
+            id="counter" 
+            type="number" 
+            placeholder="00"
+            step={5}
+            min={5}
+            max={60} />
           <span>minutos.</span>
         </FormContainer>
         <CountdownContainer>
