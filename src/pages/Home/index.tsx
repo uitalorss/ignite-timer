@@ -4,10 +4,21 @@ import {useForm} from 'react-hook-form'
 
 export function Home(){
 
-  const {register, handleSubmit, watch} = useForm();
+  const {register, handleSubmit, watch, reset} = useForm<NewCycleFormData>({
+    defaultValues:{
+      task: '',
+      minutes: 0
+    }
+  });
+
+  interface NewCycleFormData {
+    task: string;
+    minutes: number
+  }
 
   function handleNewCycle(data: any){
     console.log(data);
+    reset();
   }
 
   const task = watch('task');
