@@ -1,8 +1,18 @@
 import { Play } from "phosphor-react";
 import { ButtonSubmit, CountdownContainer, FormContainer, HomeContainer, MinutesInput, Separator, TaskInput } from "./styles";
-import {useForm} from 'react-hook-form'
+import {useForm} from 'react-hook-form';
+import { useState } from "react";
+
+interface Cycle {
+  id: string;
+  task: string;
+  minutes: number;
+}
 
 export function Home(){
+  const [cycles, setCycles] = useState<Cycle[]>([]);
+  const [activateCycleId, setActivateCycleId] = useState<string | null>(null);
+  const [secondsPassed, setSecondsPassed] = useState(0);
 
   const {register, handleSubmit, watch, reset} = useForm<NewCycleFormData>({
     defaultValues:{
@@ -16,10 +26,25 @@ export function Home(){
     minutes: number
   }
 
-  function handleNewCycle(data: any){
-    console.log(data);
+  function handleNewCycle(data: NewCycleFormData){
+    const newCycle: Cycle = {
+      id: String(new Date().getTime()),
+      task: data.task,
+      minutes: data.minutes
+    }
+    setCycles([...cycles, newCycle]);
+    setActivateCycleId(newCycle.id);
     reset();
   }
+
+  const activateCycle = cycles.find(cycle => cycle.id === activateCycleId);
+  
+  const totalSeconds = activateCycle ? activateCycle.minutes * 60 : 0;
+  const currentSeconds = activateCycle ? totalSeconds - secondsPassed : 0;
+  const minutesAmout = Math.floor(currentSeconds / 60);
+  const secondsAmount = currentSeconds % 60;
+  const valueMinutes = String(minutesAmout).padStart(2, '0');
+  const valueSeconds = String(secondsAmount).padStart(2, '0');
 
   const task = watch('task');
   let isSubmitDisabled = !task;
@@ -44,11 +69,11 @@ export function Home(){
           <span className="minutes">minutos.</span>
         </FormContainer>
         <CountdownContainer>
-          <span>0</span>
-          <span>0</span>
+          <span>{valueMinutes[0]}</span>
+          <span>{valueMinutes[1]}</span>
           <Separator>:</Separator>
-          <span>0</span>
-          <span>0</span>
+          <span>{valueSeconds[0]}</span>
+          <span>{valueSeconds[1]}</span>
         </CountdownContainer>
         <ButtonSubmit disabled={isSubmitDisabled} type="submit">
           <Play /> Começar
