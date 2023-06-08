@@ -65,6 +65,12 @@ export function Home(){
     }
   }, [activateCycle])
 
+  useEffect(() => {
+    if(activateCycle){
+      document.title = `Ignite Timer ${valueMinutes}:${valueSeconds}`
+    }
+  }, [valueMinutes, valueSeconds])
+
 
   return(
     <HomeContainer>
