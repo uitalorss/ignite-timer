@@ -1,12 +1,14 @@
 import { Play } from "phosphor-react";
 import { ButtonSubmit, CountdownContainer, FormContainer, HomeContainer, MinutesInput, Separator, TaskInput } from "./styles";
 import {useForm} from 'react-hook-form';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { differenceInSeconds } from 'date-fns';
 
 interface Cycle {
   id: string;
   task: string;
   minutes: number;
+  dateStart: Date;
 }
 
 export function Home(){
@@ -30,7 +32,8 @@ export function Home(){
     const newCycle: Cycle = {
       id: String(new Date().getTime()),
       task: data.task,
-      minutes: data.minutes
+      minutes: data.minutes,
+      dateStart: new Date()
     }
     setCycles([...cycles, newCycle]);
     setActivateCycleId(newCycle.id);
@@ -48,6 +51,15 @@ export function Home(){
 
   const task = watch('task');
   let isSubmitDisabled = !task;
+
+  useEffect(() => {
+    if(activateCycle){
+      setInterval(() => {
+        setSecondsPassed(differenceInSeconds(new Date(), activateCycle.dateStart),);
+      }, 1000)
+    }
+  }, [activateCycle])
+
 
   return(
     <HomeContainer>
