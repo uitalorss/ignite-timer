@@ -37,6 +37,7 @@ export function Home(){
     }
     setCycles([...cycles, newCycle]);
     setActivateCycleId(newCycle.id);
+    setSecondsPassed(0);
     reset();
   }
 
@@ -53,10 +54,14 @@ export function Home(){
   let isSubmitDisabled = !task;
 
   useEffect(() => {
+    let interval: number;
     if(activateCycle){
-      setInterval(() => {
+      interval = setInterval(() => {
         setSecondsPassed(differenceInSeconds(new Date(), activateCycle.dateStart),);
       }, 1000)
+    }
+    return () => {
+      clearInterval(interval);
     }
   }, [activateCycle])
 
