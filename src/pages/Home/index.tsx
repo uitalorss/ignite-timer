@@ -1,5 +1,5 @@
-import { Play } from "phosphor-react";
-import { ButtonSubmit, CountdownContainer, FormContainer, HomeContainer, MinutesInput, Separator, TaskInput } from "./styles";
+import { HandPalm, Play } from "phosphor-react";
+import {CountdownContainer, FormContainer, HomeContainer, MinutesInput, PlayCountdownButton, Separator, StopCountdownButton, TaskInput } from "./styles";
 import {useForm} from 'react-hook-form';
 import { useEffect, useState } from "react";
 import { differenceInSeconds } from 'date-fns';
@@ -9,6 +9,8 @@ interface Cycle {
   task: string;
   minutes: number;
   dateStart: Date;
+  interruptDate?: Date;
+  finishDate?: Date;
 }
 
 export function Home(){
@@ -57,19 +59,47 @@ export function Home(){
     let interval: number;
     if(activateCycle){
       interval = setInterval(() => {
-        setSecondsPassed(differenceInSeconds(new Date(), activateCycle.dateStart),);
+        let secondsDifference = differenceInSeconds(new Date(), activateCycle.dateStart);
+        if(secondsDifference >= totalSeconds){
+          setCycles(cycles.map(cycle => {
+            if(cycle.id === activateCycleId){
+              return {...cycle, finishDate: new Date()}
+            } else{
+              return cycle
+            }
+          }),
+          )
+          setSecondsPassed(totalSeconds);
+          clearInterval(interval);
+        }else{
+          setSecondsPassed(secondsDifference);
+        }
       }, 1000)
     }
     return () => {
       clearInterval(interval);
     }
-  }, [activateCycle])
+  }, [activateCycle, totalSeconds, activateCycleId])
 
   useEffect(() => {
     if(activateCycle){
       document.title = `Ignite Timer ${valueMinutes}:${valueSeconds}`
+    } else {
+      document.title = "Ignite Timer"
     }
-  }, [valueMinutes, valueSeconds])
+  }, [valueMinutes, valueSeconds, activateCycle])
+
+  function handleInterruptCycle(){
+    setCycles(cycles.map(cycle => {
+      if(cycle.id === activateCycleId){
+        return {...cycle, interruptDate: new Date()}
+      } else{
+        return cycle
+      }
+    }),
+    )
+    setActivateCycleId(null)
+  }
 
 
   return(
@@ -80,7 +110,8 @@ export function Home(){
           <TaskInput 
             type="text" 
             id="task" 
-            placeholder="Dê um nome para o seu projeto" 
+            placeholder="Dê um nome para o seu projeto"
+            disabled={!!activateCycle} 
             {...register('task')}/>
           <label htmlFor="timer">durante</label>
           <MinutesInput 
@@ -88,6 +119,7 @@ export function Home(){
             type="number" 
             id="timer" 
             placeholder="00"
+            disabled={!!activateCycle}
             {...register('minutes', {valueAsNumber: true}) }/>
           <span className="minutes">minutos.</span>
         </FormContainer>
@@ -98,11 +130,16 @@ export function Home(){
           <span>{valueSeconds[0]}</span>
           <span>{valueSeconds[1]}</span>
         </CountdownContainer>
-        <ButtonSubmit disabled={isSubmitDisabled} type="submit">
-          <Play /> Começar
-        </ButtonSubmit>
+        {activateCycle ? 
+          <StopCountdownButton onClick={handleInterruptCycle} type="button">
+            <HandPalm /> Interromper
+          </StopCountdownButton>
+          :
+          <PlayCountdownButton disabled={isSubmitDisabled} type="submit">
+            <Play /> Começar
+          </PlayCountdownButton>
+        }
       </form>
-
     </HomeContainer>
   )
 }

@@ -80,9 +80,9 @@ export const Separator = styled.div`
   justify-content: center;
 `
 
-export const ButtonSubmit = styled.button`
+export const ButtonCountdown = styled.button`
   width: 100%;
-  background: ${props => props.theme["green-500"]};
+
   color: ${props => props.theme["gray-100"]};
   border: none;
   outline: none;
@@ -99,14 +99,25 @@ export const ButtonSubmit = styled.button`
   font-weight: 700;
   cursor: pointer;
 
-  &:not(:disabled):hover{
-    background: ${props => props.theme["green-700"]};
-    transition: 0.3s ease-in-out;
-  }
-
   &:disabled{
     opacity: 0.7;
     cursor: not-allowed;
   }
+`
+export const PlayCountdownButton = styled(ButtonCountdown)`
+  background: ${props => props.theme["green-500"]};
 
+  &:not(:disabled):hover{
+    background: ${props => props.theme["green-700"]};
+    transition: 0.3s ease-in-out;
+  }
+`
+
+export const StopCountdownButton = styled(ButtonCountdown)`
+  background: ${props => props.theme["red-500"]};
+
+  &:not(:disabled):hover{
+    background: ${props => props.theme["red-700"]};
+    transition: 0.3s ease-in-out;
+  }
 `
