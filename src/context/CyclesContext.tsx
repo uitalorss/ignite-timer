@@ -10,6 +10,7 @@ interface Cycle {
 }
 
 interface CyclesContextType {
+  cycles: Cycle[];
   activateCycle: Cycle | undefined;
   activateCycleId: string | null;
   markCurrentCycleAsFinished: () => void;
@@ -28,10 +29,7 @@ interface CyclesContextProviderProps {
   children: ReactNode;
 }
 
-
 export const CyclesContext = createContext({} as CyclesContextType)
-
-
 
 export function CyclesContextProvider({children}: CyclesContextProviderProps){
   const [cycles, setCycles] = useState<Cycle[]>([]);
@@ -83,7 +81,7 @@ export function CyclesContextProvider({children}: CyclesContextProviderProps){
 
   return(
     <CyclesContext.Provider 
-        value={{activateCycle, activateCycleId, markCurrentCycleAsFinished, secondsPassed, handleSetSecondsPassed, createNewCycle, interruptCycle}}>
+        value={{cycles, activateCycle, activateCycleId, markCurrentCycleAsFinished, secondsPassed, handleSetSecondsPassed, createNewCycle, interruptCycle}}>
           {children}
     </CyclesContext.Provider>
 
