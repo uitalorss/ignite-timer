@@ -58,6 +58,19 @@ export function CyclesContextProvider({children}: CyclesContextProviderProps){
         activateCycleId: null
       }
     }
+    if(action.type === 'MARK_CURRENT_CYCLE_AS_FINISHED'){
+      return {
+        ...state,
+        cycles: state.cycles.map(cycle => {
+          if(cycle.id === state.activateCycleId){
+            return {...cycle, finishDate: new Date()}
+          }else{
+            return cycle;
+          }
+        }),
+        activateCycleId: null
+      }
+    }
     return state;
   }, {
     cycles: [],
