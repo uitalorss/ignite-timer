@@ -24,7 +24,7 @@ export function History(){
                   <tr key={cycle.id}>
                     <td>{cycle.task}</td>
                     <td>{cycle.minutes} minutos</td>
-                    <td>{formatDistanceToNow(cycle.dateStart, {addSuffix: true, locale: ptBR})}</td>
+                    <td>{formatDistanceToNow(new Date(cycle.dateStart), {addSuffix: true, locale: ptBR})}</td>
                     <td>
                       {cycle.finishDate && <Status statusColor="green">Concluído</Status>}
                       {cycle.interruptDate && <Status statusColor="red">Interrompido</Status>}

@@ -19,7 +19,7 @@ export function Countdown(){
     let interval: number;
     if(activateCycle){
       interval = setInterval(() => {
-        let secondsDifference = differenceInSeconds(new Date(), activateCycle.dateStart);
+        let secondsDifference = differenceInSeconds(new Date(), new Date(activateCycle.dateStart));
         if(secondsDifference >= totalSeconds){
           markCurrentCycleAsFinished();
           handleSetSecondsPassed(totalSeconds);

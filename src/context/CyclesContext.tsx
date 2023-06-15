@@ -1,6 +1,7 @@
 import { ReactNode, createContext, useEffect, useReducer, useState } from "react";
 import { Cycle, cyclesReducer } from "../reducers/cyclesReducer";
 import { addNewCycleAction, finishCycleAction, interruptCycleAction } from "../reducers/actions";
+import { differenceInSeconds } from "date-fns";
 
 interface CyclesContextType {
   cycles: Cycle[];
@@ -29,11 +30,29 @@ export function CyclesContextProvider({children}: CyclesContextProviderProps){
   {
     cycles: [],
     activateCycleId: null
-  });
-  const [secondsPassed, setSecondsPassed] = useState(0);
+  }, (initialState) => {
+    const data = localStorage.getItem('@ignite-time:cycles-state-1.0');
+    if(data){
+      return JSON.parse(data);
+    }
 
+    return initialState
+  });
   const {cycles, activateCycleId} = cyclesState
   const activateCycle = cycles.find(cycle => cycle.id === activateCycleId);
+
+  const [secondsPassed, setSecondsPassed] = useState(() => {
+    if(activateCycle){
+      return differenceInSeconds(new Date(), new Date(activateCycle.dateStart))
+    }
+    return 0;
+  });
+
+  
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cyclesState)
+    localStorage.setItem('@ignite-time:cycles-state-1.0', stateJSON);
+  }, [cyclesState])
 
   function markCurrentCycleAsFinished(){
     dispatch(finishCycleAction())
